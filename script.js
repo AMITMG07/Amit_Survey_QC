@@ -1,6 +1,7 @@
 const defaultTodos = [
     "Verify that question labels and types are correct.",
     "Ensure base conditions are applied correctly.",
+    "Ensure formatting (bold, italic, underline, etc.) is as per the questionnaire.",
     "Check if the question text and response text match with the questionnaire.",
     "Confirm proper termination or skip logic is in place.",
     "Ensure recodes match with the questionnaire."
