@@ -1,8 +1,17 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
     background-color: #f9f9f9;
+    overflow-y: hidden;
+}
+
+body.scrollable {
+    overflow-y: auto;
 }
 
 .container {
@@ -15,13 +24,13 @@ body {
 }
 
 h2, h3, h4 {
-    margin-bottom: 10px;
     text-align: center;
+    margin-bottom: 10px;
 }
 
 .todo-box {
-    border: 2px solid #ccc;
-    padding: 15px;
+    border: 1px solid #ddd;
+    padding: 12px;
     margin-bottom: 10px;
     border-radius: 6px;
     background: #fff;
@@ -29,24 +38,26 @@ h2, h3, h4 {
 
 .todo-text {
     text-align: center;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .todo-actions {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 button {
-    padding: 8px 14px;
+    padding: 6px 12px;
     border: none;
     background-color: #007BFF;
     color: white;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 13px;
     transition: background-color 0.3s ease;
 }
 
@@ -65,20 +76,23 @@ button:hover {
 .done {
     background-color: lightgreen;
     text-decoration: line-through;
-    padding: 5px;
+    padding: 4px;
     border-radius: 4px;
 }
 
 .add-section {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
 }
 
 .add-section input {
     flex: 1;
-    padding: 8px;
-    border: 2px solid #ccc;
+    min-width: 200px;
+    padding: 6px;
+    border: 1px solid #ccc;
     border-radius: 4px;
 }
 
@@ -86,6 +100,6 @@ button:hover {
 @media (max-width: 480px) {
     .todo-actions {
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
     }
 }
