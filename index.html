@@ -1,30 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survey QC To-Do</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Survey QC</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <h2>Survey QC</h2>
-
-        <h3>📋 Script Check</h3>
-        <div id="script-check-list"></div>
-
-        <h3>🔗 Link QC</h3>
-        <div id="link-qc-list"></div>
-
-        <h4>Add Custom Logic Points</h4>
-        <div class="add-section">
-            <input type="text" id="custom-input" placeholder="Enter custom logic point">
-            <button id="add-btn">Add</button>
-        </div>
-
-        <div id="custom-todo-list"></div>
+  <!-- Home Page -->
+  <div id="home-page" class="page active">
+    <div class="home-container">
+      <h1>Survey QC</h1>
+      <p class="subtitle">Easily check scripts, verify links, and generate reports.</p>
+      <div class="button-group">
+        <button onclick="navigateTo('script-page')">📋 Script Check</button>
+        <button onclick="navigateTo('link-page')">🔗 Link Check</button>
+        <button onclick="downloadAndEmailPDF()">📑 Download & Email PDF</button>
+      </div>
     </div>
+  </div>
 
-    <script src="script.js"></script>
+  <!-- Script Check Page -->
+  <div id="script-page" class="page">
+    <div class="container">
+      <h2>Survey QC</h2>
+      <h3>📋 Script Check</h3>
+      <div id="script-check-list"></div>
+
+      <h4>Add Custom Logic Points</h4>
+      <div class="add-section">
+        <input type="text" id="custom-script-input" placeholder="Enter custom logic point" />
+        <button id="add-script-btn">Add</button>
+      </div>
+      <div id="custom-script-list"></div>
+
+      <button class="nav-btn" onclick="navigateTo('home-page')">🏠 Back to Home</button>
+    </div>
+  </div>
+
+  <!-- Link QC Page -->
+  <div id="link-page" class="page">
+    <div class="container">
+      <h2>Survey QC</h2>
+      <h3>🔗 Link QC</h3>
+      <div id="link-qc-list"></div>
+
+      <h4>Add Custom Logic Points</h4>
+      <div class="add-section">
+        <input type="text" id="custom-link-input" placeholder="Enter custom logic point" />
+        <button id="add-link-btn">Add</button>
+      </div>
+      <div id="custom-link-list"></div>
+
+      <button class="nav-btn" onclick="navigateTo('home-page')">🏠 Back to Home</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

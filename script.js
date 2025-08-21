@@ -1,88 +1,161 @@
+// Default Todos
 const scriptTodos = [
-    "Ensure base conditions, terminations, and skip logic are correctly applied.",
-    "Verify that recodes are added as per the questionnaire and question types match the requirements.",
-    "Confirm randomization is implemented as per the questionnaire specifications."
+  "Ensure base conditions are correctly applied.",
+  "Ensure termination conditions are correctly applied.",
+  "Ensure skip logic is correctly implemented.",
+  "Verify that recodes are added as per the questionnaire.",
+  "Verify that question types match the requirements.",
+  "Confirm that randomization is implemented as per the questionnaire specifications."
 ];
 
 const linkQCTodos = [
-    "Verify that all question labels and types are accurate.",
-    "Ensure base conditions, terminations, and skip logic work as expected.",
-    "Check that formatting (bold, italic, underline, etc.) follows the questionnaire.",
-    "Confirm that question text and response text exactly match the questionnaire."
+  "Verify that all question labels and types are accurate.",
+  "Ensure base conditions work as expected.",
+  "Ensure termination conditions work as expected.",
+  "Ensure skip logic works as expected.",
+  "Check that formatting (bold, italic, underline, etc.) follows the questionnaire.",
+  "Confirm that question text and response text exactly match the questionnaire."
 ];
 
-const scriptList = document.getElementById("script-check-list");
-const linkQCList = document.getElementById("link-qc-list");
-const customList = document.getElementById("custom-todo-list");
-const addBtn = document.getElementById("add-btn");
-const customInput = document.getElementById("custom-input");
-
-function createTodoElement(text, isCustom = false) {
-    const box = document.createElement("div");
-    box.classList.add("todo-box");
-
-    const label = document.createElement("div");
-    label.classList.add("todo-text");
-    label.textContent = text;
-    box.appendChild(label);
-
-    const actions = document.createElement("div");
-    actions.classList.add("todo-actions");
-
-    const doneBtn = document.createElement("button");
-    doneBtn.textContent = isCustom ? "Logic Checked ✅" : "QC Passed ✅";
-    doneBtn.onclick = () => label.classList.add("done");
-
-    const undoneBtn = document.createElement("button");
-    undoneBtn.textContent = "Mark as Pending 🔄";
-    undoneBtn.onclick = () => label.classList.remove("done");
-
-    // If custom, add delete button to right side
-    if (isCustom) {
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete ❌";
-        deleteBtn.classList.add("delete-btn");
-        deleteBtn.onclick = () => {
-            box.remove();
-            checkScrollState();
-        };
-        actions.appendChild(doneBtn);
-        actions.appendChild(undoneBtn);
-        actions.appendChild(deleteBtn);
-    } else {
-        actions.appendChild(doneBtn);
-        actions.appendChild(undoneBtn);
-    }
-
-    box.appendChild(actions);
-    return box;
+// Page Navigation
+function navigateTo(pageId) {
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
 }
 
-// Load default todos
-scriptTodos.forEach(todo => {
-    scriptList.appendChild(createTodoElement(todo, false));
-});
-linkQCTodos.forEach(todo => {
-    linkQCList.appendChild(createTodoElement(todo, false));
-});
+// Create To-do Element
+function createTodoElement(text, isCustom, listType) {
+  const box = document.createElement("div");
+  box.classList.add("todo-box");
 
-// Add custom todo
-addBtn.addEventListener("click", () => {
-    const value = customInput.value.trim();
+  const label = document.createElement("div");
+  label.classList.add("todo-text");
+  label.textContent = text;
+  box.appendChild(label);
+
+  const actions = document.createElement("div");
+  actions.classList.add("todo-actions");
+
+  const doneBtn = document.createElement("button");
+  doneBtn.textContent = isCustom ? "Logic Checked ✅" : "QC Passed ✅";
+  doneBtn.onclick = () => {
+    label.classList.add("done");
+    saveTodos(listType);
+  };
+
+  const undoneBtn = document.createElement("button");
+  undoneBtn.textContent = "Mark as Pending 🔄";
+  undoneBtn.onclick = () => {
+    label.classList.remove("done");
+    saveTodos(listType);
+  };
+
+  actions.appendChild(doneBtn);
+  actions.appendChild(undoneBtn);
+
+  if (isCustom) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete ❌";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.onclick = () => {
+      box.remove();
+      saveTodos(listType);
+    };
+    actions.appendChild(deleteBtn);
+  }
+
+  box.appendChild(actions);
+  return box;
+}
+
+// Save Todos to LocalStorage
+function saveTodos(listType) {
+  const todos = [];
+  document.querySelectorAll(`#${listType}-list .todo-box`).forEach(box => {
+    todos.push({
+      text: box.querySelector(".todo-text").textContent,
+      done: box.querySelector(".todo-text").classList.contains("done")
+    });
+  });
+  localStorage.setItem(listType, JSON.stringify(todos));
+}
+
+// Load Todos from LocalStorage
+function loadTodos(listType, defaultTodos, customInputId, addBtnId, customListId) {
+  const list = document.getElementById(`${listType}-list`);
+  const customList = document.getElementById(customListId);
+  list.innerHTML = "";
+  customList.innerHTML = "";
+
+  const stored = JSON.parse(localStorage.getItem(listType)) || [];
+  if (stored.length > 0) {
+    stored.forEach(todo => {
+      const el = createTodoElement(todo.text, false, listType);
+      if (todo.done) el.querySelector(".todo-text").classList.add("done");
+      list.appendChild(el);
+    });
+  } else {
+    defaultTodos.forEach(todo => {
+      list.appendChild(createTodoElement(todo, false, listType));
+    });
+  }
+
+  document.getElementById(addBtnId).onclick = () => {
+    const value = document.getElementById(customInputId).value.trim();
     if (value) {
-        customList.appendChild(createTodoElement(value, true));
-        customInput.value = "";
-        checkScrollState();
+      customList.appendChild(createTodoElement(value, true, listType));
+      document.getElementById(customInputId).value = "";
+      saveTodos(listType);
     }
-});
-
-// Enable scroll only if needed
-function checkScrollState() {
-    if (document.body.scrollHeight > window.innerHeight) {
-        document.body.classList.add("scrollable");
-    } else {
-        document.body.classList.remove("scrollable");
-    }
+  };
 }
 
-checkScrollState();
+// Load Script & Link Todos
+loadTodos("script-check", scriptTodos, "custom-script-input", "add-script-btn", "custom-script-list");
+loadTodos("link-qc", linkQCTodos, "custom-link-input", "add-link-btn", "custom-link-list");
+
+// PDF & Email Function (Optimized)
+async function downloadAndEmailPDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  for (let pageId of ["script-page", "link-page"]) {
+    const element = document.getElementById(pageId);
+    element.classList.add("active"); 
+    await new Promise(resolve => setTimeout(resolve, 200)); // shorter wait
+
+    // faster screenshot (lower scale)
+    const canvas = await html2canvas(element, { scale: 1.2, backgroundColor: "#fff" });
+    const imgData = canvas.toDataURL("image/png");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    if (pageId !== "link-page") pdf.addPage();
+
+    element.classList.remove("active"); 
+  }
+
+  // Save PDF quickly
+  const pdfFileName = "Survey_QC.pdf";
+  pdf.save(pdfFileName);
+
+  // ✅ Gmail compose link (removed Regards)
+  const gmailUrl =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    "&to=amitgadad@gmail.com" +
+    "&su=" + encodeURIComponent("Survey QC Report") +
+    "&body=" + encodeURIComponent(
+      "Hi,\n\nPlease find the attached Survey QC PDF.\n\n(Attachment: " + pdfFileName + ")"
+    );
+
+  const win = window.open(gmailUrl, "_blank");
+  if (!win) {
+    // ✅ Fallback: mailto (removed Regards)
+    window.location.href =
+      "mailto:amitgadad@gmail.com" +
+      "?subject=" + encodeURIComponent("Survey QC Report") +
+      "&body=" + encodeURIComponent("Hi,\n\nPlease find the attached Survey QC PDF.\n\n");
+  }
+}
