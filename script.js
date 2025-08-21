@@ -114,7 +114,7 @@ function loadTodos(listType, defaultTodos, customInputId, addBtnId, customListId
 loadTodos("script-check", scriptTodos, "custom-script-input", "add-script-btn", "custom-script-list");
 loadTodos("link-qc", linkQCTodos, "custom-link-input", "add-link-btn", "custom-link-list");
 
-// PDF & Email Function (Optimized)
+// PDF & Email Function (Full Page Capture)
 async function downloadAndEmailPDF() {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p", "mm", "a4");
@@ -122,10 +122,17 @@ async function downloadAndEmailPDF() {
   for (let pageId of ["script-page", "link-page"]) {
     const element = document.getElementById(pageId);
     element.classList.add("active"); 
-    await new Promise(resolve => setTimeout(resolve, 200)); // shorter wait
+    await new Promise(resolve => setTimeout(resolve, 300)); // small wait
 
-    // faster screenshot (lower scale)
-    const canvas = await html2canvas(element, { scale: 1.2, backgroundColor: "#fff" });
+    // ✅ Capture full scrollable content
+    const canvas = await html2canvas(element, {
+      scale: 2,                  // better clarity
+      backgroundColor: "#fff",
+      useCORS: true,
+      windowWidth: element.scrollWidth,   // capture full width
+      windowHeight: element.scrollHeight  // capture full height
+    });
+
     const imgData = canvas.toDataURL("image/png");
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -137,11 +144,9 @@ async function downloadAndEmailPDF() {
     element.classList.remove("active"); 
   }
 
-  // Save PDF quickly
   const pdfFileName = "Survey_QC.pdf";
   pdf.save(pdfFileName);
 
-  // ✅ Gmail compose link (removed Regards)
   const gmailUrl =
     "https://mail.google.com/mail/?view=cm&fs=1" +
     "&to=amitgadad@gmail.com" +
@@ -152,7 +157,6 @@ async function downloadAndEmailPDF() {
 
   const win = window.open(gmailUrl, "_blank");
   if (!win) {
-    // ✅ Fallback: mailto (removed Regards)
     window.location.href =
       "mailto:amitgadad@gmail.com" +
       "?subject=" + encodeURIComponent("Survey QC Report") +
