@@ -1,3 +1,8 @@
+// ✅ Clear LocalStorage when page is closed, refreshed, or tab is closed
+window.addEventListener("beforeunload", function () {
+  localStorage.clear();
+});
+
 // Default Todos
 const scriptTodos = [
   "Ensure base conditions are correctly applied.",
@@ -114,23 +119,21 @@ function loadTodos(listType, defaultTodos, customInputId, addBtnId, customListId
 loadTodos("script-check", scriptTodos, "custom-script-input", "add-script-btn", "custom-script-list");
 loadTodos("link-qc", linkQCTodos, "custom-link-input", "add-link-btn", "custom-link-list");
 
-// PDF & Email Function (Full Page Capture)
+// PDF & Email Function (Optimized Full Page Capture)
 async function downloadAndEmailPDF() {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p", "mm", "a4");
 
   for (let pageId of ["script-page", "link-page"]) {
     const element = document.getElementById(pageId);
-    element.classList.add("active"); 
-    await new Promise(resolve => setTimeout(resolve, 300)); // small wait
+    element.classList.add("active");
 
-    // ✅ Capture full scrollable content
     const canvas = await html2canvas(element, {
-      scale: 2,                  // better clarity
+      scale: 1.5,
       backgroundColor: "#fff",
       useCORS: true,
-      windowWidth: element.scrollWidth,   // capture full width
-      windowHeight: element.scrollHeight  // capture full height
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight
     });
 
     const imgData = canvas.toDataURL("image/png");
@@ -141,7 +144,7 @@ async function downloadAndEmailPDF() {
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     if (pageId !== "link-page") pdf.addPage();
 
-    element.classList.remove("active"); 
+    element.classList.remove("active");
   }
 
   const pdfFileName = "Survey_QC.pdf";
