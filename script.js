@@ -119,6 +119,45 @@ function loadTodos(listType, defaultTodos, customInputId, addBtnId, customListId
 loadTodos("script-check", scriptTodos, "custom-script-input", "add-script-btn", "custom-script-list");
 loadTodos("link-qc", linkQCTodos, "custom-link-input", "add-link-btn", "custom-link-list");
 
+// ✅ Function to open Outlook App if installed, else Outlook Web
+function openOutlookMail(pdfFileName) {
+  // Build both URLs
+  const mailtoUrl =
+    "mailto:amitgadad@gmail.com" +
+    "?subject=" + encodeURIComponent("Survey QC Report") +
+    "&body=" + encodeURIComponent(
+      "Hi,\n\nPlease find the attached Survey QC PDF.\n\n(Attachment: " + pdfFileName + ")"
+    );
+
+  const outlookWebUrl =
+    "https://outlook.office.com/mail/deeplink/compose" +
+    "?to=amitgadad@gmail.com" +
+    "&subject=" + encodeURIComponent("Survey QC Report") +
+    "&body=" + encodeURIComponent(
+      "Hi,\n\nPlease find the attached Survey QC PDF.\n\n(Attachment: " + pdfFileName + ")"
+    );
+
+  // ✅ Detect if running on desktop (where Outlook app might be installed)
+  const isDesktop = /Win|Mac|Linux/i.test(navigator.platform);
+
+  if (isDesktop) {
+    // Try opening Outlook app first
+    const tempLink = document.createElement("a");
+    tempLink.href = mailtoUrl;
+    tempLink.style.display = "none";
+    document.body.appendChild(tempLink);
+    tempLink.click();
+
+    // Fallback: if Outlook app not available, open web after short delay
+    setTimeout(() => {
+      window.open(outlookWebUrl, "_blank");
+    }, 800);
+  } else {
+    // On mobile or unknown → directly use Outlook Web
+    window.open(outlookWebUrl, "_blank");
+  }
+}
+
 // ✅ Optimized PDF & Email Function
 async function downloadAndEmailPDF() {
   const { jsPDF } = window.jspdf;
@@ -149,23 +188,6 @@ async function downloadAndEmailPDF() {
   const pdfFileName = "Survey_QC.pdf";
   pdf.save(pdfFileName);
 
-  // ✅ Use Outlook (not Gmail)
-  const outlookUrl =
-    "https://outlook.office.com/mail/deeplink/compose" +
-    "?to=amitgadad@gmail.com" +
-    "&subject=" + encodeURIComponent("Survey QC Report") +
-    "&body=" + encodeURIComponent(
-      "Hi,\n\nPlease find the attached Survey QC PDF.\n\n(Attachment: " + pdfFileName + ")"
-    );
-
-  // Try opening Outlook
-  const win = window.open(outlookUrl, "_blank");
-
-  // Fallback: mailto link
-  if (!win) {
-    window.location.href =
-      "mailto:amitgadad@gmail.com" +
-      "?subject=" + encodeURIComponent("Survey QC Report") +
-      "&body=" + encodeURIComponent("Hi,\n\nPlease find the attached Survey QC PDF.\n\n");
-  }
+  // Open Outlook app first, else web
+  openOutlookMail(pdfFileName);
 }
