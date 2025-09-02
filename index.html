@@ -13,11 +13,24 @@
       <h1>Survey QC</h1>
       <p class="subtitle">Quickly check survey scripts, validate links, and generate reports effortlessly.</p>
       <div class="button-group">
-        <button onclick="navigateTo('script-page')">📋 Script Check</button>
-        <button onclick="navigateTo('link-page')">🔗 Link Check</button>
+        <!-- 1) Only two buttons -->
+        <button onclick="navigateTo('add-question-page')">➕ Add Question Page</button>
         <button onclick="downloadAndEmailPDF()">📑 Download & Email PDF</button>
       </div>
       <p class="footer-note">Designed for efficiency and accuracy in survey quality control.</p>
+    </div>
+  </div>
+
+  <!-- Add Question Page -->
+  <div id="add-question-page" class="page">
+    <div class="container">
+      <h2>Survey QC</h2>
+      <h3>➕ Add Question</h3>
+      <div class="add-section">
+        <input type="text" id="question-number-input" placeholder="Enter Question Number (e.g., Q1)" />
+        <button onclick="startCheck()">Script & Link Check</button>
+      </div>
+      <button class="nav-btn" onclick="navigateTo('home-page')">🏠 Back to Home</button>
     </div>
   </div>
 
@@ -25,7 +38,7 @@
   <div id="script-page" class="page">
     <div class="container">
       <h2>Survey QC</h2>
-      <h3>📋 Script Check</h3>
+      <h3>📋 Script Check <span id="script-q-label" class="q-label"></span></h3>
       <div id="script-check-list"></div>
       <h4>Add Custom Logic Points</h4>
       <div class="add-section">
@@ -33,6 +46,7 @@
         <button id="add-script-btn">Add</button>
       </div>
       <div id="custom-script-list"></div>
+      <button class="nav-btn" onclick="navigateTo('link-page')">➡️ Go to Link QC</button>
       <button class="nav-btn" onclick="navigateTo('home-page')">🏠 Back to Home</button>
     </div>
   </div>
@@ -41,7 +55,7 @@
   <div id="link-page" class="page">
     <div class="container">
       <h2>Survey QC</h2>
-      <h3>🔗 Link QC</h3>
+      <h3>🔗 Link QC <span id="link-q-label" class="q-label"></span></h3>
       <div id="link-qc-list"></div>
       <h4>Add Custom Logic Points</h4>
       <div class="add-section">
@@ -49,6 +63,7 @@
         <button id="add-link-btn">Add</button>
       </div>
       <div id="custom-link-list"></div>
+      <button class="nav-btn" onclick="finishCheck()">✅ Done</button>
       <button class="nav-btn" onclick="navigateTo('home-page')">🏠 Back to Home</button>
     </div>
   </div>

@@ -200,3 +200,17 @@ button:hover {
     gap: 6px;
   }
 }
+
+/* --- Added minimal styles for new features --- */
+
+/* (2) Small gray label appended to headings showing the question number */
+.q-label {
+  margin-left: 8px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* (3) Highlight when "Not Applicable" is clicked */
+.not-applicable {
+  background-color: #ffe58f !important;
+}
